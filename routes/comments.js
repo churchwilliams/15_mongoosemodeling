@@ -1,8 +1,17 @@
 var express = require('express');
+var Comment = require('./../models/comment');
 var router = express.Router();
 
 router.get('/:pid/comments', function(req, res) {
-  res.status(404).send('all comments, post: ' + req.params.pid );
+  Comment.find({postId: req.params.pid}).exec(function(err, comments){
+    if (err) {
+      console.log("db error in GET /posts/:pid/comments: " + err);
+      res.render('500');
+    }
+    else{
+      res.render('comments/index', {comments: comments});
+    }
+  });
 });
 
 router.get('/:pid/comments/new', function(req, res) {
